@@ -81,7 +81,12 @@ export class CompanyService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.companyRepository.delete(id);
+    // const company = await this.findOne(id)
+    // if(company){
+    //   company.admin.id
+    //   this.userService.delete(company.admin.id)
+    //   await this.companyRepository.delete(id);
+    // }
   }
 
   error(msg: string){

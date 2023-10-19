@@ -11,6 +11,9 @@ export class QuestionEntity {
     @Column()
     text: string;
 
+    @Column({ nullable: true })
+    avg_rating: number;
+
     @ManyToOne(() => CompanyEntity, (company) => company.questions)
     company: CompanyEntity;
 

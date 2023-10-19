@@ -39,8 +39,8 @@ export class ReviewService {
     return await this.reviewRepository.save(review);
   }
 
-  findAll() {
-    return `This action returns all review`;
+  async findAll() {
+    return await this.reviewRepository.find({ relations: ['question', 'branch'] });
   }
 
   findOne(id: number) {

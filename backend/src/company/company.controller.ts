@@ -41,6 +41,14 @@ export class CompanyController {
     return this.companyService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @AllowedRoles(Role.SuperAdmin, Role.CompanyAdmin)
+  @Get(':id/reviews')
+  async findAllReviews(@Param('id') id: number): Promise<CompanyEntity> {
+    return this.companyService.findAllReviews(id);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: number,

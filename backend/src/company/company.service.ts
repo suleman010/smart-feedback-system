@@ -67,6 +67,14 @@ export class CompanyService {
     return company;
   }
 
+  async findAllReviews(id: number): Promise<CompanyEntity> {
+    const company = await this.companyRepository.findOne({relations: ['questions','questions.reviews'] , where: {id}});
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${id} not found`);
+    }
+    return company;
+  }
+
   async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<CompanyEntity> {
     await this.companyRepository.update(id, updateCompanyDto);
     return this.findOne(id);

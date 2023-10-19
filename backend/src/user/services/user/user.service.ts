@@ -32,7 +32,7 @@ export class UserService {
       passwordHash: await this.passwordService.generate(userDto.password),
     };
 
-    let newUser = this.usersRepository.create(userPayload);
+    let newUser = await this.usersRepository.create(userPayload);
     newUser = await this.updateUser(newUser);
 
     newUser.token = this.getUserToken(newUser);
@@ -60,14 +60,14 @@ export class UserService {
     });
   }
 
-  public getAll(): Promise<UserEntity[]> {
-    return this.usersRepository.find({
+  public async getAll(): Promise<UserEntity[]> {
+    return await this.usersRepository.find({
       select: ['id', 'email', 'lastName', 'firstName', 'role', 'created_at'],
     });
   }
 
-  public findOne(id: number): Promise<UserEntity | null> {
-    return this.usersRepository.findOne({
+  public async findOne(id: number): Promise<UserEntity | null> {
+    return await this.usersRepository.findOne({
       select: ['id', 'email', 'lastName', 'firstName', 'role', 'created_at'], where: { id: id }
     });
   }

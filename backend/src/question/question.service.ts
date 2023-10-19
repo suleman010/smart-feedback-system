@@ -16,17 +16,17 @@ export class QuestionService {
   ) {}
 
   async create(companyId: number, text: string): Promise<QuestionEntity> {
-    const question = this.questionRepository.create({ text });
+    const question = await this.questionRepository.create({ text });
 
     question.company = await this.companyService.findOne(companyId);
     if(!question.company){
       throw new NotFoundException('Company Not Found')
     }
-    return this.questionRepository.save(question);
+    return await this.questionRepository.save(question);
   }
 
   async getQuestionsForCompany(companyId: number): Promise<QuestionEntity[]> {
-    return this.questionRepository.find({ where: { company: { id: companyId } } });
+    return await this.questionRepository.find({ where: { company: { id: companyId } } });
   }
   
   

@@ -19,7 +19,7 @@ export class CompanyService {
   async create(createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
     const { name, description, adminId } = createCompanyDto;
 
-    const newCompany = this.companyRepository.create({
+    const newCompany = await this.companyRepository.create({
       name,
       description,
     });
@@ -29,7 +29,7 @@ export class CompanyService {
       adminUser ? newCompany.admin = adminUser: this.error('User not found');
     }
 
-    return this.companyRepository.save(newCompany);
+    return await this.companyRepository.save(newCompany);
   }
 
   async findAll(userId:number): Promise<CompanyEntity[]> {
@@ -39,7 +39,7 @@ export class CompanyService {
       console.log(user)
       if (user.role === 'company-admin' || user.role === 'branch-admin') {
         // Assuming that you want to retrieve companies where the user is the admin
-        return this.companyRepository
+        return await this.companyRepository
         .createQueryBuilder('company')
         .innerJoin('company.admin', 'admin')
         .leftJoinAndSelect('company.branches', 'branches')
@@ -47,7 +47,7 @@ export class CompanyService {
         .getMany();
       } else {
         // Return all companies if the user is not a company admin or branch admin
-        return this.companyRepository.find();
+        return await this.companyRepository.find();
       }
     } else {
       // Handle the case where the user is not found or null

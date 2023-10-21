@@ -6,43 +6,94 @@ import { Repository } from 'typeorm';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewEntity } from './entities/review.entity';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { QuestionRatingEntity } from './entities/question-rating.entity';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectRepository(ReviewEntity)
     private readonly reviewRepository: Repository<ReviewEntity>,
+    @InjectRepository(QuestionRatingEntity)
+    private readonly questionRatingRepository: Repository<QuestionRatingEntity>,
     private readonly questionService: QuestionService,
     private readonly branchService: BranchService,
-  ) {}
-  
-  async create(createReviewDto: CreateReviewDto): Promise<ReviewEntity> {
-    const { rating, branchId, questionId } = createReviewDto;
+  ) { }
 
-    const branch = await this.branchService.findOne(branchId)
-    const question = await this.questionService.findOne(questionId)
 
-    if (!branch) {
-      throw new NotFoundException(`Branch with ID ${branchId} not found`);
+  async create(reviewData: any): Promise<ReviewEntity> {
+    const branch = await this.branchService.findOne(reviewData.branchId);
+
+    const review = await this.reviewRepository.create({
+      full_name: reviewData.fullName,
+      email: reviewData.email,
+      phone: reviewData.phone,
+      city: reviewData.city ?? '',
+      branch: branch
+    });
+    const savedReview = await this.reviewRepository.save(review);
+
+    const questions = await this.questionService.findByIds(reviewData.ratings.map((rating: any) => rating.questionId));
+    if (!questions || questions.length !== reviewData.ratings.length) {
+      throw new NotFoundException('One or more questions were not found');
     }
 
-    if (!question) {
-      throw new NotFoundException(`Question with ID ${questionId} not found`);
+    if (reviewData.ratings) {
+      let ratings: any[] = [];
+      for (let i = 0; i < reviewData.ratings.length; i++) {
+        let ratingData = reviewData.ratings[i]
+        let question = questions.find((q) => q.id == ratingData.questionId);
+        if (!question) {
+          throw new NotFoundException(`Question with ID ${ratingData.questionId} not found`);
+        }
+        const rating = await this.questionRatingRepository.create({
+          review: savedReview,
+          question: question,
+          rating: ratingData.rating
+        });
+
+        const saveRating = await this.questionRatingRepository.save(rating);
+        ratings.push(saveRating)
+      }
+      review.branch = branch;
+      review.ratings = ratings;
+      // const sum = ratings.reduce((total, currentRating) => total + currentRating.rating, 0)/ratings.length;
+      review.avg_rating = ratings.reduce((total, currentRating) => total + currentRating.rating, 0)/ratings.length; 
+      return this.reviewRepository.save(review);
+    } else {
+      throw new NotFoundException(`Ratings not found`);
     }
-
-    const review = new ReviewEntity();
-    review.rating = rating
-    review.branch = branch;
-    review.question = question;
-
-    // return await this.reviewRepository.save(review);
-    return await this.reviewRepository.save(review);
   }
 
   async findAll() {
-    return await this.reviewRepository.find({ relations: ['question', 'branch'] });
+    return await this.reviewRepository.find({ relations: ['branch', 'ratings', 'ratings.question'] });
   }
 
+  
+  async findReviewsByBranchId(branchId: number) {
+    return await this.reviewRepository.find({ relations: ['branch', 'ratings', 'ratings.question'], where: { branch: { id: branchId } }});
+  }
+  
+  async findReviewsByCompanyId(companyId: number) {
+    return await this.reviewRepository.createQueryBuilder('review')
+    .innerJoin('review.branch', 'branch')
+    .innerJoin('branch.company', 'company')
+    .where('company.id = :companyId', { companyId })
+    .getMany();
+  }
+
+  async getAnalysisByCompanyId(companyId: number) {
+    const reviews = await this.reviewRepository.createQueryBuilder('review')
+    .innerJoin('review.branch', 'branch')
+    .innerJoin('branch.company', 'company')
+    .where('company.id = :companyId', { companyId })
+    .getMany();
+
+    return { positive_review_count: reviews.filter((review) => review.avg_rating > 3).length,
+      negative_review_count: reviews.filter((review) => review.avg_rating > 3).length,
+      average_review_count: reviews.filter((review) => review.avg_rating == 3).length,
+      total_review_count: reviews.length}
+  }
+  
   findOne(id: number) {
     return `This action returns a #${id} review`;
   }

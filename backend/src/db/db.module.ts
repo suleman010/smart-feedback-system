@@ -11,10 +11,10 @@ import { getConfig } from '../services/app-config/configuration';
         } = getConfig();
 
         return {
-          type: 'postgres',
+          type: 'postgres', 
           host,
           port,
-          username: user,
+          username: user, 
           password,
           database: dbName,
           autoLoadEntities: true,

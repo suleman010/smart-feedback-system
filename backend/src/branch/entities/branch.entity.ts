@@ -21,7 +21,7 @@ export class BranchEntity {
     updated_at: Date;
 
     // This establishes a one-to-many relation with users who are Company Admins
-    @OneToOne(() => UserEntity, (user: UserEntity) => user.company)
+    @OneToOne(() => UserEntity, (user: UserEntity) => user.branch)
     admin: UserEntity;
 
     // Establish a many-to-one relationship with the parent company

@@ -5,9 +5,10 @@ import { QuestionModule } from 'src/question/question.module';
 import { ReviewEntity } from './entities/review.entity';
 import { ReviewController } from './review.controller';
 import { ReviewService } from './review.service';
+import { QuestionRatingEntity } from './entities/question-rating.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReviewEntity]), QuestionModule, BranchModule],
+  imports: [TypeOrmModule.forFeature([ReviewEntity, QuestionRatingEntity]), QuestionModule, BranchModule],
   controllers: [ReviewController],
   providers: [ReviewService]
 })

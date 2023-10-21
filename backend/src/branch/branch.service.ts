@@ -52,7 +52,7 @@ export class BranchService {
   async findOne(id: number): Promise<BranchEntity> {
     const branch = await this.branchRepository.findOne({ relations:['company','admin'], where: {id: id}});
     if (!branch) {
-      throw new NotFoundException(`Company with ID ${id} not found`);
+      throw new NotFoundException(`branch with ID ${id} not found`);
     }
 
     branch.admin.token = ""

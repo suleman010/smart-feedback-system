@@ -1,5 +1,6 @@
 // question.entity.ts
 import { CompanyEntity } from 'src/company/entities/company.entity';
+import { QuestionRatingEntity } from 'src/review/entities/question-rating.entity';
 import { ReviewEntity } from 'src/review/entities/review.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -17,6 +18,9 @@ export class QuestionEntity {
     @ManyToOne(() => CompanyEntity, (company) => company.questions)
     company: CompanyEntity;
 
-    @OneToMany(type => ReviewEntity, review => review.question)
-    reviews: ReviewEntity[];
+    // @OneToMany(type => ReviewEntity, review => review.question)
+    // reviews: ReviewEntity[];
+
+    @OneToMany(type => QuestionRatingEntity, rating => rating.question)
+    ratings: QuestionRatingEntity[];
 }

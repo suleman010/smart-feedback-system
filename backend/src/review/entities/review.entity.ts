@@ -1,21 +1,31 @@
 import { BranchEntity } from "src/branch/entities/branch.entity";
 import { QuestionEntity } from "src/question/entities/question.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { QuestionRatingEntity } from "./question-rating.entity";
 
 @Entity('review')
 export class ReviewEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // feedback: string;
+  @Column({ nullable: true })
+  full_name: string;
+  
+  @Column()
+  phone: string;
+  
+  @Column()
+  email: string;
+  
+  @Column({ nullable: true})
+  city: string;
 
-  @Column({ type: 'integer' })
-  rating: number; // Add a field to store the rating (1 to 5 stars)
+  @Column({ type: 'float', nullable: true })
+  avg_rating: number;
 
   @ManyToOne(type => BranchEntity, branch => branch.reviews)
   branch: BranchEntity;
 
-  @ManyToOne(type => QuestionEntity, question => question.reviews)
-  question: QuestionEntity;
+  @OneToMany(type => QuestionRatingEntity, rating => rating.review)
+  ratings: QuestionRatingEntity[];
 }

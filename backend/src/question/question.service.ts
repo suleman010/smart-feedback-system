@@ -5,6 +5,7 @@ import { QuestionEntity } from './entities/question.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompanyService } from 'src/company/company.service';
+import { In } from 'typeorm';
 
 @Injectable()
 export class QuestionService {
@@ -41,6 +42,19 @@ export class QuestionService {
     }
     return question;
   }
+  
+  async findByIds(questionIds: number[]):  Promise<QuestionEntity[]>  {
+    const questions = await this.questionRepository.find({
+      where: { id: In(questionIds) },
+    });
+
+    if (!questions) {
+      throw new NotFoundException('questions were not found');
+    }
+    return questions; 
+  }
+
+  
 
   update(id: number, updateQuestionDto: UpdateQuestionDto) {
     return `This action updates a #${id} question`;

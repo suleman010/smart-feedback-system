@@ -16,7 +16,7 @@ export class UserService {
   ) { }
 
   async isUserExists(email: string): Promise<UserEntity | null> {
-    return this.usersRepository.findOne({
+    return this.usersRepository.findOne({ relations:['branch', 'company'],
       where: {
         email: email.toLowerCase(),
       },

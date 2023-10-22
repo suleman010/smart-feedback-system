@@ -24,7 +24,7 @@ export class AuthService {
     return await this.userService.createUser(userDto);
   }
 
-  async login(loginRequest: LoginDto): Promise<string | void> {
+  async login(loginRequest: LoginDto): Promise<any | void> {
     const { email, password } = loginRequest;
     const user = await this.userService.isUserExists(email);
 
@@ -37,7 +37,7 @@ export class AuthService {
       user.token = token;
       await this.userService.updateUser(user);
 
-      return token;
+      return { token: token, branch: user.branch, company: user.company, adminId: user.id, role: user.role };
     }
 
     this.failLogin('Incorrect password');

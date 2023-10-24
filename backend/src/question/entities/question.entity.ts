@@ -2,7 +2,7 @@
 import { CompanyEntity } from 'src/company/entities/company.entity';
 import { QuestionRatingEntity } from 'src/review/entities/question-rating.entity';
 import { ReviewEntity } from 'src/review/entities/review.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('questions')
 export class QuestionEntity {
@@ -23,4 +23,10 @@ export class QuestionEntity {
 
     @OneToMany(type => QuestionRatingEntity, rating => rating.question)
     ratings: QuestionRatingEntity[];
+
+    @CreateDateColumn() // Automatically sets the creation date
+    created_at: Date;
+  
+    @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
+    updated_at: Date;
 }

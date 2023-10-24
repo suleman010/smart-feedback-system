@@ -88,10 +88,17 @@ export class ReviewService {
     .where('company.id = :companyId', { companyId })
     .getMany();
 
-    return { positive_review_count: reviews.filter((review) => review.avg_rating > 3).length,
-      negative_review_count: reviews.filter((review) => review.avg_rating > 3).length,
-      average_review_count: reviews.filter((review) => review.avg_rating == 3).length,
-      total_review_count: reviews.length}
+    const positiveReviewCount = reviews.filter((review) => review.avg_rating > 3).length;
+    const negativeReviewCount = reviews.filter((review) => review.avg_rating < 3).length;
+    const averageReviewCount = reviews.filter((review) => review.avg_rating === 3).length;
+    const totalReviewCount = reviews.length;
+  
+    return {
+      positive_review_count: positiveReviewCount,
+      negative_review_count: negativeReviewCount,
+      average_review_count: averageReviewCount,
+      total_review_count: totalReviewCount,
+    };
   }
   
   findOne(id: number) {

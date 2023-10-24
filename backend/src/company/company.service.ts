@@ -32,22 +32,65 @@ export class CompanyService {
     return await this.companyRepository.save(newCompany);
   }
 
-  async findAll(userId:number): Promise<CompanyEntity[]> {
+  async findAll(userId:number) {
     // if(user)
     const user = await this.userService.findOne(userId);
     if (user && user !== null) {
       console.log(user)
       if (user.role === 'company-admin' || user.role === 'branch-admin') {
         // Assuming that you want to retrieve companies where the user is the admin
-        return await this.companyRepository
+        let company:any =  await this.companyRepository
         .createQueryBuilder('company')
         .innerJoin('company.admin', 'admin')
         .leftJoinAndSelect('company.branches', 'branches')
+        .leftJoinAndSelect('branches.reviews', 'reviews')
         .where('admin.id = :userId', { userId: user.id })
         .getMany();
+
+        if(company[0].branches){
+          company[0].branches.forEach((branch:any,index:any) => {
+            const positiveReviewCount = branch.reviews.filter((review:any) => review.avg_rating > 3).length;
+            const negativeReviewCount = branch.reviews.filter((review:any) => review.avg_rating < 3).length;
+            const averageReviewCount = branch.reviews.filter((review:any) => review.avg_rating === 3).length;
+            const totalReviewCount = branch.reviews.length;
+            company[0].branches[index]['analysis'] =  {
+              positive_review_count: positiveReviewCount,
+              negative_review_count: negativeReviewCount,
+              average_review_count: averageReviewCount,
+              total_review_count: totalReviewCount,
+            };
+          });
+
+        }
+      
+        return company;
       } else {
         // Return all companies if the user is not a company admin or branch admin
-        return await this.companyRepository.find();
+        let company:any =  await this.companyRepository
+        .createQueryBuilder('company')
+        .innerJoin('company.admin', 'admin')
+        .leftJoinAndSelect('company.branches', 'branches')
+        .leftJoinAndSelect('branches.reviews', 'reviews')
+        .getMany();
+
+        company.forEach((c:any) => {
+        
+          c.branches.forEach((branch:any,index:any) => {
+            const positiveReviewCount = branch.reviews.filter((review:any) => review.avg_rating > 3).length;
+            const negativeReviewCount = branch.reviews.filter((review:any) => review.avg_rating < 3).length;
+            const averageReviewCount = branch.reviews.filter((review:any) => review.avg_rating === 3).length;
+            const totalReviewCount = branch.reviews.length;
+            company[0].branches[index]['analysis'] =  {
+              positive_review_count: positiveReviewCount,
+              negative_review_count: negativeReviewCount,
+              average_review_count: averageReviewCount,
+              total_review_count: totalReviewCount,
+            };
+          });
+
+        });
+        
+        return company;
       }
     } else {
       // Handle the case where the user is not found or null

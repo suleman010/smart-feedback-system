@@ -27,7 +27,7 @@ export class CompanyController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @AllowedRoles(Role.SuperAdmin, Role.CompanyAdmin)
   @Get()
-  async findAll(@Req() req: Request): Promise<CompanyEntity[] | CompanyEntity> {
+  async findAll(@Req() req: Request) {
     let user:any = req.user
     return this.companyService.findAll(user.id); 
   }

@@ -42,6 +42,18 @@ export class QuestionService {
     }
     return question;
   }
+
+  async getQuestionsByCompanyId(companyId: number): Promise<QuestionEntity[]> {
+    const questions = await this.questionRepository.find({
+      where: { company: { id: companyId } },
+    });
+  
+    if (!questions || questions.length === 0) {
+      throw new NotFoundException(`Questions for company ID ${companyId} not found`);
+    }
+  
+    return questions;
+  }
   
   async findByIds(questionIds: number[]):  Promise<QuestionEntity[]>  {
     const questions = await this.questionRepository.find({

@@ -22,6 +22,11 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
+  @Get('company/:id')
+  getQuestionsByCompanyId(@Param('id') id: string): Promise<QuestionEntity[]> {
+    return this.questionService.getQuestionsByCompanyId(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
     return this.questionService.update(+id, updateQuestionDto);

@@ -37,6 +37,12 @@ export class ReviewController {
     return this.reviewService.getAnalysisByCompanyId(+id);
   }
 
+  @Get('all/analysis')
+  getAnalysis() {
+    console.log('test')
+    return this.reviewService.getAnalysis();
+  }
+
   // @Get('branch/:id')
   // findReviewsByBranchId(@Param('id') id: string) {
   //   return this.reviewService.findReviewsByBranchId(+id);

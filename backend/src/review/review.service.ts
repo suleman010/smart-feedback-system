@@ -98,18 +98,38 @@ export class ReviewService {
       negative_review_count: negativeReviewCount,
       average_review_count: averageReviewCount,
       total_review_count: totalReviewCount,
+    }
+  }
+
+  async getAnalysis() {
+    const reviews = await this.reviewRepository.find()
+    // ('review')
+    // .innerJoin('review.branch', 'branch')
+    // .innerJoin('branch.company', 'company')
+    // .getMany();
+
+    const positiveReviewCount = reviews.filter((review) => review.avg_rating > 3).length;
+    const negativeReviewCount = reviews.filter((review) => review.avg_rating < 3).length;
+    const averageReviewCount = reviews.filter((review) => review.avg_rating === 3).length;
+    const totalReviewCount = reviews.length;
+  
+    return {
+      positive_review_count: positiveReviewCount,
+      negative_review_count: negativeReviewCount,
+      average_review_count: averageReviewCount,
+      total_review_count: totalReviewCount,
     };
   }
   
   findOne(id: number) {
-    return `This action returns a #${id} review`;
+    return `This action returns a #${id} review1`;
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+    return `This action updates a #${id} review12`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} review`;
+    return `This action removes a #${id} review123`;
   }
 }

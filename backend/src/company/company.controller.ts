@@ -59,7 +59,7 @@ export class CompanyController {
 
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<void> {
-    return this.companyService.remove(id);
+    return this.companyService.delete(id);
   }
 
 }

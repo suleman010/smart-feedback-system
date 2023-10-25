@@ -129,13 +129,19 @@ export class CompanyService {
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
-    // const company = await this.findOne(id)
-    // if(company){
-    //   company.admin.id
-    //   this.userService.delete(company.admin.id)
-    //   await this.companyRepository.delete(id);
-    // }
+  async delete(id: number): Promise<void> {
+    let company: any = await this.companyRepository.findOne({ relations: ['admin', 'branches', 'branches.admin'], where: { id } });
+
+    if (company) {
+      console.log(company)
+      const adminId = company.admin.id;
+      if(company.branches.length>0) {
+        await this.userService.delete(adminId);
+        company.branches.forEach(async (x:any) => {
+          await this.userService.delete(x.id);
+        });
+      }
+    }
   }
 
   error(msg: string) {

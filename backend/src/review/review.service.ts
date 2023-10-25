@@ -103,11 +103,6 @@ export class ReviewService {
 
   async getAnalysis() {
     const reviews = await this.reviewRepository.find()
-    // ('review')
-    // .innerJoin('review.branch', 'branch')
-    // .innerJoin('branch.company', 'company')
-    // .getMany();
-
     const positiveReviewCount = reviews.filter((review) => review.avg_rating > 3).length;
     const negativeReviewCount = reviews.filter((review) => review.avg_rating < 3).length;
     const averageReviewCount = reviews.filter((review) => review.avg_rating === 3).length;

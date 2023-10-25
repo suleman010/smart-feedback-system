@@ -36,7 +36,6 @@ export class AuthService {
       const token = this.userService.getUserToken(user);
       user.token = token;
       await this.userService.updateUser(user);
-
       return { token: token, branch: user.branch, company: user.company, adminId: user.id, role: user.role };
     }
 

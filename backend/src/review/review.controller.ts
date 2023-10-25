@@ -8,7 +8,6 @@ export class ReviewController {
 
   @Post()
   create(@Body() createReviewDto: any) {
-    console.log('chheck', createReviewDto)
     return this.reviewService.create(createReviewDto);
   }
 
@@ -39,7 +38,6 @@ export class ReviewController {
 
   @Get('all/analysis')
   getAnalysis() {
-    console.log('test')
     return this.reviewService.getAnalysis();
   }
 

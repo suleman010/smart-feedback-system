@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionService } from './question.service';
 import { QuestionEntity } from './entities/question.entity';
@@ -27,9 +27,12 @@ export class QuestionController {
     return this.questionService.getQuestionsByCompanyId(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return this.questionService.update(+id, updateQuestionDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() updateQuestionDto: UpdateQuestionDto,
+  ): Promise<QuestionEntity> {
+    return this.questionService.update(id, updateQuestionDto);
   }
 
   @Delete(':id')

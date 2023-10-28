@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CompanyService } from 'src/company/company.service';
+import { UserService } from 'src/user/services/user/user.service';
+import { Repository } from 'typeorm';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { BranchEntity } from './entities/branch.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserService } from 'src/user/services/user/user.service';
-import { Repository } from 'typeorm';
-import { CompanyService } from 'src/company/company.service';
 
 @Injectable()
 export class BranchService {
@@ -15,6 +15,7 @@ export class BranchService {
     private readonly branchRepository: Repository<BranchEntity>,
     private readonly userService: UserService,
     private readonly companyService: CompanyService,
+    // private readonly reviewService: ReviewService,
   ) { }
 
   async create(createBranchDto: CreateBranchDto): Promise<BranchEntity> {
@@ -61,11 +62,35 @@ export class BranchService {
     return branch;
   }
 
-  update(id: number, updateBranchDto: UpdateBranchDto) {
-    return `This action updates a #${id} branch`;
+  async update(id: number, updateBranchDto: UpdateBranchDto): Promise<BranchEntity> {
+    const existingBranch = await this.branchRepository.findOne({ where:{id}});
+
+    if (!existingBranch) {
+      throw new NotFoundException(`Question with ID ${id} not found`);
+    }
+
+    // Update the question properties with data from the DTO
+    this.branchRepository.merge(existingBranch, updateBranchDto);
+
+    const updatedQuestion = await this.branchRepository.save(existingBranch);
+
+    return updatedQuestion;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} branch`;
+  async remove(id: number) {
+    let branch: any = await this.branchRepository.findOne({ relations: ['admin','reviews','reviews.ratings'], where: { id } });
+
+    if (branch) {
+      const adminId = branch.admin.id;
+        await this.userService.delete(adminId);
+
+        branch.reviews.forEach(async (x:any) => {
+            // await this.reviewService.remove(x.id);
+        //   x.ratings.forEach(async (x:any) => {
+        //   await this.reviewService.delete(x.id);
+        // });
+        });
+  
+    }
   }
 }

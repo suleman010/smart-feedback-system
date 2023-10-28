@@ -67,9 +67,19 @@ export class QuestionService {
   }
 
   
+  async update(id: number, updateQuestionDto: UpdateQuestionDto): Promise<QuestionEntity> {
+    const existingQuestion = await this.questionRepository.findOne({ where:{id}});
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+    if (!existingQuestion) {
+      throw new NotFoundException(`Question with ID ${id} not found`);
+    }
+
+    // Update the question properties with data from the DTO
+    this.questionRepository.merge(existingQuestion, updateQuestionDto);
+
+    const updatedQuestion = await this.questionRepository.save(existingQuestion);
+
+    return updatedQuestion;
   }
 
   remove(id: number) {

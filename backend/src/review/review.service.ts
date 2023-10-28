@@ -116,15 +116,29 @@ export class ReviewService {
     };
   }
   
-  findOne(id: number) {
-    return `This action returns a #${id} review1`;
+  async findOne(id: number) {
+    return await this.reviewRepository.find({ relations: ['branch', 'ratings', 'ratings.question'], where: { id: id }});
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
     return `This action updates a #${id} review12`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review123`;
+  async remove(id: number) {
+    const review = await this.reviewRepository.findOne({ relations: ['ratings'], where: { id } });
+
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+
+    for (const questionRating of review.ratings) {
+      await this.removeQuestionRating(questionRating.id);
+    }
+    return await this.reviewRepository.delete(id)
+
+  }
+  
+  async removeQuestionRating(id: any){
+    await this.questionRatingRepository.delete(id);
   }
 }

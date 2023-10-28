@@ -125,9 +125,20 @@ export class CompanyService {
   }
 
   async update(id: number, updateCompanyDto: UpdateCompanyDto): Promise<CompanyEntity> {
-    await this.companyRepository.update(id, updateCompanyDto);
-    return this.findOne(id);
+    const existingCompany = await this.companyRepository.findOne({ where:{id}});
+
+    if (!existingCompany) {
+      throw new NotFoundException(`Question with ID ${id} not found`);
+    }
+
+    // Update the question properties with data from the DTO
+    this.companyRepository.merge(existingCompany, updateCompanyDto);
+
+    const updatedCompany = await this.companyRepository.save(existingCompany);
+
+    return updatedCompany;
   }
+
 
   async delete(id: number): Promise<void> {
     let company: any = await this.companyRepository.findOne({ relations: ['admin', 'branches', 'branches.admin'], where: { id } });

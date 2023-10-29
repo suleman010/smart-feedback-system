@@ -84,27 +84,27 @@ export class CompanyService {
           // .where('company.deletedAt IS NULL')
 
           console.log(company)
-        // company.forEach((c: any) => {
-        //   let reviews = c.branches.flatMap((branch:any) => branch.reviews);
-        //   c['analysis'] = this.getAnalysisOfCompany(reviews)
+        company.forEach((c: any) => {
+          let reviews = c.branches.flatMap((branch:any) => branch.reviews);
+          c['analysis'] = this.getAnalysisOfCompany(reviews)
 
-        //   if (c.branches) {
-        //     c.branches.forEach((branch: any, index: any) => {
-        //       const positiveReviewCount = branch.reviews.filter((review: any) => review.avg_rating > 3).length;
-        //       const negativeReviewCount = branch.reviews.filter((review: any) => review.avg_rating < 3).length;
-        //       const averageReviewCount = branch.reviews.filter((review: any) => review.avg_rating === 3).length;
-        //       const totalReviewCount = branch.reviews.length;
-        //       c.branches[index]['analysis'] = {
-        //         positive_review_count: positiveReviewCount,
-        //         negative_review_count: negativeReviewCount,
-        //         average_review_count: averageReviewCount,
-        //         total_review_count: totalReviewCount,
-        //       };
+          if (c.branches) {
+            c.branches.forEach((branch: any, index: any) => {
+              const positiveReviewCount = branch.reviews.filter((review: any) => review.avg_rating > 3).length;
+              const negativeReviewCount = branch.reviews.filter((review: any) => review.avg_rating < 3).length;
+              const averageReviewCount = branch.reviews.filter((review: any) => review.avg_rating === 3).length;
+              const totalReviewCount = branch.reviews.length;
+              c.branches[index]['analysis'] = {
+                positive_review_count: positiveReviewCount,
+                negative_review_count: negativeReviewCount,
+                average_review_count: averageReviewCount,
+                total_review_count: totalReviewCount,
+              };
 
-        //     });
-        //   }
+            });
+          }
 
-        // });
+        });
 
         return company;
       }

@@ -162,7 +162,7 @@ export class CompanyService {
         await this.userService.delete(adminId);
 
       }
-      await this.companyRepository.softRemove({ id: company.id });
+      await this.companyRepository.delete({ id: company.id });
       
     }
   }

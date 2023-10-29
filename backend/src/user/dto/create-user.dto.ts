@@ -26,25 +26,16 @@ export class CreateAdminDto {
 }
 
 export class CreateUserDto {
-  @IsString()
-  // @IsOptional()
-  firstName: string;
-
-  @IsString()
-  // @IsOptional()
-  lastName: string;
-
-  @IsString()
-  @IsOptional()
-  phone: string;
-
-  @IsString()
-  role: Role;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    isVirtual: boolean;
+    manufacturer: string;
+    model: string;
+    operatingSystem: string;
+    osVersion: string;
+    platform: string;
+    webViewVersion: string;
+  
 }

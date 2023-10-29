@@ -6,7 +6,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CreateAdminDto } from './dto/create-user.dto';
+import { CreateAdminDto, CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { AuthService } from './services/auth/auth.service';
@@ -20,7 +20,7 @@ export class UserController {
   ) {}
 
   @Post('register')
-  async register(@Body() user: CreateAdminDto) {
+  async register(@Body() user: CreateUserDto) {
     const newUser = await this.authService.register(user);
     return {
       message: 'User created',

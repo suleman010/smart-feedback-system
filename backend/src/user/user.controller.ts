@@ -1,15 +1,11 @@
-import { CACHE_MANAGER, CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
   Get,
-  Inject,
   Post,
-  UseGuards,
-  UseInterceptors
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Cache } from 'cache-manager';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
@@ -22,13 +18,11 @@ export class UserController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   @Post('register')
   async register(@Body() user: CreateUserDto) {
     const newUser = await this.authService.register(user);
-    this.cacheManager.del('getUsers')
     return {
       message: 'User created',
       user: {

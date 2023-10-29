@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/services/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyEntity } from './entities/company.entity';
+import { BranchService } from 'src/branch/branch.service';
+import { BranchEntity } from 'src/branch/entities/branch.entity';
 
 @Injectable()
 export class CompanyService {
@@ -12,7 +14,9 @@ export class CompanyService {
   constructor(
     @InjectRepository(CompanyEntity)
     private readonly companyRepository: Repository<CompanyEntity>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    // @InjectRepository(BranchEntity)
+    // private readonly branchRepository: Repository<BranchEntity>,
   ) { }
 
   async create(createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
@@ -44,8 +48,9 @@ export class CompanyService {
           .leftJoinAndSelect('branches.reviews', 'reviews')
           .where('admin.id = :userId', { userId: user.id })
           .getMany();
+          // .where('company.deletedAt IS NULL')
 
-        if (company[0].branches) {
+        if ( company && company.length > 0 && company[0].branches) {
           let reviews = company[0].branches.flatMap((branch:any) => branch.reviews);
           company[0]['analysis'] = this.getAnalysisOfCompany(reviews)
 
@@ -66,35 +71,40 @@ export class CompanyService {
 
         return company;
       } else {
+        console.log('aaaaa')
         // Return all companies if the user is not a company admin or branch admin
-        let company: any = await this.companyRepository
+        let company1: any = await this.companyRepository
           .createQueryBuilder('company')
-          .innerJoin('company.admin', 'admin')
-          .leftJoinAndSelect('company.branches', 'branches')
-          .leftJoinAndSelect('branches.reviews', 'reviews')
+          // .innerJoin('company.admin', 'admin')
+          // .leftJoinAndSelect('company.branches', 'branches')
+          // .leftJoinAndSelect('branches.reviews', 'reviews')
           .getMany();
 
-        company.forEach((c: any) => {
-          let reviews = c.branches.flatMap((branch:any) => branch.reviews);
-          c['analysis'] = this.getAnalysisOfCompany(reviews)
+          const company = await this.companyRepository.find({ relations: ['admin', 'branches', 'branches.reviews']})
+          // .where('company.deletedAt IS NULL')
 
-          if (c.branches) {
-            c.branches.forEach((branch: any, index: any) => {
-              const positiveReviewCount = branch.reviews.filter((review: any) => review.avg_rating > 3).length;
-              const negativeReviewCount = branch.reviews.filter((review: any) => review.avg_rating < 3).length;
-              const averageReviewCount = branch.reviews.filter((review: any) => review.avg_rating === 3).length;
-              const totalReviewCount = branch.reviews.length;
-              c.branches[index]['analysis'] = {
-                positive_review_count: positiveReviewCount,
-                negative_review_count: negativeReviewCount,
-                average_review_count: averageReviewCount,
-                total_review_count: totalReviewCount,
-              };
+          console.log(company)
+        // company.forEach((c: any) => {
+        //   let reviews = c.branches.flatMap((branch:any) => branch.reviews);
+        //   c['analysis'] = this.getAnalysisOfCompany(reviews)
 
-            });
-          }
+        //   if (c.branches) {
+        //     c.branches.forEach((branch: any, index: any) => {
+        //       const positiveReviewCount = branch.reviews.filter((review: any) => review.avg_rating > 3).length;
+        //       const negativeReviewCount = branch.reviews.filter((review: any) => review.avg_rating < 3).length;
+        //       const averageReviewCount = branch.reviews.filter((review: any) => review.avg_rating === 3).length;
+        //       const totalReviewCount = branch.reviews.length;
+        //       c.branches[index]['analysis'] = {
+        //         positive_review_count: positiveReviewCount,
+        //         negative_review_count: negativeReviewCount,
+        //         average_review_count: averageReviewCount,
+        //         total_review_count: totalReviewCount,
+        //       };
 
-        });
+        //     });
+        //   }
+
+        // });
 
         return company;
       }
@@ -107,12 +117,14 @@ export class CompanyService {
 
 
   async findOne(id: number): Promise<CompanyEntity> {
-    const company = await this.companyRepository.findOne({ relations: ['questions', 'branches', 'admin'], where: { id } });
+    let company = await this.companyRepository.findOne({ relations: ['questions', 'branches', 'admin'], where: { id } });
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);
     }
-    company.admin.token = ""
-    company.admin.passwordHash = ""
+    if(company.admin){
+      company.admin.token = ""
+      company.admin.passwordHash = ""
+    }
     return company;
   }
 
@@ -144,14 +156,14 @@ export class CompanyService {
     let company: any = await this.companyRepository.findOne({ relations: ['admin', 'branches', 'branches.admin'], where: { id } });
 
     if (company) {
-      console.log(company)
-      const adminId = company.admin.id;
-      if(company.branches.length>0) {
+      if(company.admin){
+        const adminId = company.admin.id;
+
         await this.userService.delete(adminId);
-        company.branches.forEach(async (x:any) => {
-          await this.userService.delete(x.id);
-        });
+
       }
+      await this.companyRepository.softRemove({ id: company.id });
+      
     }
   }
 

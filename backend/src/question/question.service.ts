@@ -72,16 +72,22 @@ export class QuestionService {
     if (!existingQuestion) {
       throw new NotFoundException(`Question with ID ${id} not found`);
     }
-
+    
     // Update the question properties with data from the DTO
     this.questionRepository.merge(existingQuestion, updateQuestionDto);
-
+    
     const updatedQuestion = await this.questionRepository.save(existingQuestion);
 
     return updatedQuestion;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  
+  async remove(id: number) {
+    const existingQuestion = await this.questionRepository.findOne({ where:{id}});
+  
+    if (!existingQuestion) {
+      throw new NotFoundException(`Question with ID ${id} not found`);
+    }
+    
+    this.questionRepository.softRemove(existingQuestion)
   }
 }

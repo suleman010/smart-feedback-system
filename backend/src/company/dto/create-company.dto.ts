@@ -1,6 +1,6 @@
 // company.dto.ts
 
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateCompanyDto {
   @IsNotEmpty()

@@ -55,9 +55,11 @@ export class BranchService {
     if (!branch) {
       throw new NotFoundException(`branch with ID ${id} not found`);
     }
+    if(branch.admin){
+      branch.admin.token = ""
+      branch.admin.passwordHash = ""
 
-    branch.admin.token = ""
-    branch.admin.passwordHash = ""
+    }
 
     return branch;
   }
@@ -81,16 +83,13 @@ export class BranchService {
     let branch: any = await this.branchRepository.findOne({ relations: ['admin','reviews','reviews.ratings'], where: { id } });
 
     if (branch) {
-      const adminId = branch.admin.id;
+      if(branch.admin){
+        const adminId = branch.admin.id;
+
         await this.userService.delete(adminId);
 
-        branch.reviews.forEach(async (x:any) => {
-            // await this.reviewService.remove(x.id);
-        //   x.ratings.forEach(async (x:any) => {
-        //   await this.reviewService.delete(x.id);
-        // });
-        });
-  
+      }
+        await this.branchRepository.softRemove({ id: branch.id });
     }
   }
 }

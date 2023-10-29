@@ -3,7 +3,7 @@
 import { BranchEntity } from 'src/branch/entities/branch.entity';
 import { QuestionEntity } from 'src/question/entities/question.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('companies')
 export class CompanyEntity {
@@ -16,6 +16,9 @@ export class CompanyEntity {
   @Column({ nullable: true })
   description: string;
 
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date;
+
   @CreateDateColumn() // Automatically sets the creation date
   created_at: Date;
 
@@ -27,9 +30,13 @@ export class CompanyEntity {
   admin: UserEntity;
 
   // One-to-many relationship with branches
-  @OneToMany(() => BranchEntity, (branch) => branch.company)
+  @OneToMany(() => BranchEntity, (branch) => branch.company, {
+    cascade: ['soft-remove'], // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+  })
   branches: BranchEntity[];
 
-  @OneToMany(() => QuestionEntity, (question) => question.company)
+  @OneToMany(() => QuestionEntity, (question) => question.company, {
+    cascade: ['soft-remove'], // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+  })
   questions: QuestionEntity[];
 }

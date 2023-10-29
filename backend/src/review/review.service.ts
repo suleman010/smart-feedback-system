@@ -134,7 +134,7 @@ export class ReviewService {
     for (const questionRating of review.ratings) {
       await this.removeQuestionRating(questionRating.id);
     }
-    return await this.reviewRepository.delete(id)
+    return await this.reviewRepository.softDelete(id)
 
   }
   

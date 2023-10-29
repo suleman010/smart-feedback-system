@@ -21,7 +21,9 @@ export class QuestionEntity {
     // @OneToMany(type => ReviewEntity, review => review.question)
     // reviews: ReviewEntity[];
 
-    @OneToMany(type => QuestionRatingEntity, rating => rating.question)
+    @OneToMany(type => QuestionRatingEntity, rating => rating.question, {
+        cascade: ['soft-remove'],
+    })
     ratings: QuestionRatingEntity[];
 
     @CreateDateColumn() // Automatically sets the creation date

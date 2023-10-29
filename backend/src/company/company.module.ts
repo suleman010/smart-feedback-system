@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { BranchService } from "src/branch/branch.service";
 import { UserModule } from "src/user/user.module";
 import { CompanyController } from "./company.controller";
 import { CompanyService } from "./company.service";
@@ -11,4 +12,4 @@ import { CompanyEntity } from "./entities/company.entity";
   providers: [CompanyService],
   exports: [CompanyService],
 })
-export class CompanyModule {}
+export class CompanyModule {} 

@@ -26,6 +26,8 @@ export class ReviewEntity {
   @ManyToOne(type => BranchEntity, branch => branch.reviews)
   branch: BranchEntity;
 
-  @OneToMany(type => QuestionRatingEntity, rating => rating.review)
+  @OneToMany(type => QuestionRatingEntity, rating => rating.review, {
+    cascade: ['soft-remove'],
+})
   ratings: QuestionRatingEntity[];
 }

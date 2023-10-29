@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../guards/role.enum';
 import { CompanyEntity } from 'src/company/entities/company.entity';
-import { BranchEntity } from 'src/branch/entities/branch.entity';
 
 @Entity({
   name: 'users',
@@ -22,6 +21,9 @@ export class UserEntity {
 
   @Column()
   email: string;
+  
+  @Column()
+  phone: string;
 
   @Column({
     name: 'password',
@@ -46,10 +48,4 @@ export class UserEntity {
   @JoinColumn({ name: 'companyId' }) // this decorator is optional but helps specify the column name
   company?: CompanyEntity;
 
-  @OneToOne(() =>  BranchEntity, (branch) => branch.admin)
-  @JoinColumn({ name: 'branchId' }) // this decorator is optional but helps specify the column name
-  branch?: BranchEntity;
-  // @ManyToOne(() => BranchEntity, { nullable: true })
-  // @JoinColumn({ name: 'branchId' }) // this decorator is optional but helps specify the column name
-  // branch?: BranchEntity;
 }

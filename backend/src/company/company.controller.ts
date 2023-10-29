@@ -25,7 +25,7 @@ export class CompanyController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @AllowedRoles(Role.SuperAdmin, Role.CompanyAdmin)
+  @AllowedRoles(Role.SuperAdmin)
   @Get()
   async findAll(@Req() req: Request) {
     let user:any = req.user
@@ -35,7 +35,7 @@ export class CompanyController {
   
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @AllowedRoles(Role.SuperAdmin, Role.CompanyAdmin)
+  @AllowedRoles(Role.SuperAdmin)
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<CompanyEntity> {
     return this.companyService.findOne(id);
@@ -43,7 +43,7 @@ export class CompanyController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @AllowedRoles(Role.SuperAdmin, Role.CompanyAdmin)
+  @AllowedRoles(Role.SuperAdmin)
   @Get(':id/reviews')
   async findAllReviews(@Param('id') id: number): Promise<CompanyEntity> {
     return this.companyService.findAllReviews(id);

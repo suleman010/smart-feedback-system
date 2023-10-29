@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../../entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../../dto/create-user.dto';
-import { PasswordService } from '../password/password.service';
+import { UserEntity } from '../../entities/user.entity';
 import { JwtService } from '../jwt/jwt.service';
+import { PasswordService } from '../password/password.service';
+import { CreateAdminDto } from 'src/user/dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -23,7 +23,7 @@ export class UserService {
     });
   }
 
-  async createUser(userDto: CreateUserDto): Promise<UserEntity> {
+  async createUser(userDto: CreateAdminDto): Promise<UserEntity> {
     const userPayload = {
       email: userDto.email.toLowerCase(),
       firstName: userDto.firstName,

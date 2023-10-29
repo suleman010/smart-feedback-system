@@ -22,7 +22,7 @@ export class QuestionEntity {
     // reviews: ReviewEntity[];
 
     @OneToMany(type => QuestionRatingEntity, rating => rating.question, {
-        cascade: ['soft-remove'],
+        cascade: true
     })
     ratings: QuestionRatingEntity[];
 

@@ -31,12 +31,12 @@ export class CompanyEntity {
 
   // One-to-many relationship with branches
   @OneToMany(() => BranchEntity, (branch) => branch.company, {
-    cascade: ['soft-remove'], // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+    cascade: true // Enable cascading soft remove (soft-delete) for related ReviewEntity records
   })
   branches: BranchEntity[];
 
   @OneToMany(() => QuestionEntity, (question) => question.company, {
-    cascade: ['soft-remove'], // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+    cascade: true // Enable cascading soft remove (soft-delete) for related ReviewEntity records
   })
   questions: QuestionEntity[];
 }

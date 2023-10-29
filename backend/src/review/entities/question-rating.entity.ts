@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ReviewEntity } from 'src/review/entities/review.entity';
 import { QuestionEntity } from 'src/question/entities/question.entity';
 
@@ -15,4 +15,13 @@ export class QuestionRatingEntity {
 
   @Column({ type: 'integer' })
   rating: number;
+
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date;
+
+  @CreateDateColumn() // Automatically sets the creation date
+  created_at: Date;
+
+  @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
+  updated_at: Date;
 }

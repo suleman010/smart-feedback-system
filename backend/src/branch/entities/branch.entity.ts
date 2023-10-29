@@ -32,7 +32,7 @@ export class BranchEntity {
     company: CompanyEntity;
 
     @OneToMany(() => ReviewEntity, (review) => review.branch, {
-        cascade: ['soft-remove'],
+        cascade: true
     })
     reviews: ReviewEntity[];
 }

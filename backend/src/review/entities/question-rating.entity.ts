@@ -16,8 +16,8 @@ export class QuestionRatingEntity {
   @Column({ type: 'integer' })
   rating: number;
 
-  @DeleteDateColumn({ nullable: true })
-  deletedAt: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt: Date; 
 
   @CreateDateColumn() // Automatically sets the creation date
   created_at: Date;

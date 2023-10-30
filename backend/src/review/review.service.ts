@@ -86,6 +86,7 @@ export class ReviewService {
     .innerJoin('review.branch', 'branch')
     .innerJoin('branch.company', 'company')
     .where('company.id = :companyId', { companyId })
+    .andWhere('company.deletedAt IS NULL')
     .getMany();
 
     const positiveReviewCount = reviews.filter((review) => review.avg_rating > 3).length;
@@ -102,7 +103,11 @@ export class ReviewService {
   }
 
   async getAnalysis() {
-    const reviews = await this.reviewRepository.find()
+    const reviews = await this.reviewRepository.createQueryBuilder('review')
+    .innerJoin('review.branch', 'branch')
+    .innerJoin('branch.company', 'company')
+    .where('company.deletedAt IS NULL')
+    .getMany();
     const positiveReviewCount = reviews.filter((review) => review.avg_rating > 3).length;
     const negativeReviewCount = reviews.filter((review) => review.avg_rating < 3).length;
     const averageReviewCount = reviews.filter((review) => review.avg_rating === 3).length;

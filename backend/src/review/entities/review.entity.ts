@@ -28,11 +28,11 @@ export class ReviewEntity {
 
   @OneToMany(type => QuestionRatingEntity, rating => rating.review, {
     cascade: true
-})
+  })
   ratings: QuestionRatingEntity[];
 
-  @DeleteDateColumn({ nullable: true })
-  deletedAt: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt: Date; 
 
   @CreateDateColumn() // Automatically sets the creation date
   created_at: Date;

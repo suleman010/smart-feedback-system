@@ -1,8 +1,7 @@
 // question.entity.ts
 import { CompanyEntity } from 'src/company/entities/company.entity';
 import { QuestionRatingEntity } from 'src/review/entities/question-rating.entity';
-import { ReviewEntity } from 'src/review/entities/review.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('questions')
 export class QuestionEntity {
@@ -11,7 +10,7 @@ export class QuestionEntity {
 
     @Column()
     text: string;
-
+ 
     @Column({ nullable: true })
     avg_rating: number;
 
@@ -31,4 +30,7 @@ export class QuestionEntity {
   
     @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
     updated_at: Date;
+
+    @DeleteDateColumn({ type: 'timestamp', nullable: true })
+    deletedAt: Date; 
 }

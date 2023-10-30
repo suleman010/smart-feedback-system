@@ -18,10 +18,10 @@ export class BranchEntity {
     created_at: Date;
 
     @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
-    updated_at: Date;
+    updated_at: Date; 
 
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
-    deletedAt: Date;
+    deletedAt: Date; 
 
     // This establishes a one-to-many relation with users who are Company Admins
     @OneToOne(() => UserEntity, (user: UserEntity) => user.branch)

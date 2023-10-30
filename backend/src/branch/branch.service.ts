@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CompanyService } from 'src/company/company.service';
+import { CompanyEntity } from 'src/company/entities/company.entity';
 import { UserService } from 'src/user/services/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateBranchDto } from './dto/create-branch.dto';
@@ -13,8 +13,10 @@ export class BranchService {
   constructor(
     @InjectRepository(BranchEntity)
     private readonly branchRepository: Repository<BranchEntity>,
+    @InjectRepository(CompanyEntity)
+    private readonly companyRepository: Repository<CompanyEntity>,
     private readonly userService: UserService,
-    private readonly companyService: CompanyService,
+    // private readonly companyService: CompanyService,
     // private readonly reviewService: ReviewService,
   ) { }
 
@@ -22,7 +24,7 @@ export class BranchService {
     const { name, description, companyId, adminId } = createBranchDto;
 
     if (companyId) {
-      const company = await this.companyService.findOne(companyId);
+      const company = await this.companyRepository.findOne({ where: { id: companyId}});
       if (company) {
         const newBranch = await this.branchRepository.create({
           name,

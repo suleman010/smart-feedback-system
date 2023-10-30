@@ -16,8 +16,8 @@ export class CompanyEntity {
   @Column({ nullable: true })
   description: string;
 
-  @DeleteDateColumn({ nullable: true })
-  deletedAt: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt: Date; 
 
   @CreateDateColumn() // Automatically sets the creation date
   created_at: Date;
@@ -31,12 +31,13 @@ export class CompanyEntity {
 
   // One-to-many relationship with branches
   @OneToMany(() => BranchEntity, (branch) => branch.company, {
-    cascade: true // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+    cascade: true, // Enable cascading soft remove (soft-delete) for related ReviewEntity records
   })
   branches: BranchEntity[];
 
   @OneToMany(() => QuestionEntity, (question) => question.company, {
-    cascade: true // Enable cascading soft remove (soft-delete) for related ReviewEntity records
+    cascade: true,
   })
   questions: QuestionEntity[];
+  // ke 334215
 }

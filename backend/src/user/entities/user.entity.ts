@@ -42,9 +42,8 @@ export class UserEntity {
   @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
   updated_at: Date;
 
-  
-  @DeleteDateColumn({ nullable: true })
-  deletedAt: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt: Date; 
 
   @OneToOne(() => CompanyEntity, company => company.admin)
   @JoinColumn({ name: 'companyId' }) // this decorator is optional but helps specify the column name

@@ -88,7 +88,7 @@ export class BranchService {
       if(branch.admin){
         const adminId = branch.admin.id;
 
-        await this.userService.delete(adminId);
+        await this.userService.remove(adminId);
 
       }
         await this.branchRepository.softRemove({ id: branch.id });

@@ -201,7 +201,7 @@ export class CompanyService {
   async delete(
     companyId: number
   ) {
-    const company = await this.companyRepository.findOne({ where:{id : companyId}});
+    const company = await this.companyRepository.findOne({ relations:['admin'], where:{id : companyId}});
 
     if (!company) {
       throw new NotFoundException('Company not found');
@@ -215,6 +215,9 @@ export class CompanyService {
     }
 
     // Now, you can safely delete the company
+    if(company.admin){
+      await this.userService.remove(company.admin.id);
+    }
     await this.companyRepository.softRemove(company);
   }
 

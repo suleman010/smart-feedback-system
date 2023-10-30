@@ -88,6 +88,6 @@ export class QuestionService {
       throw new NotFoundException(`Question with ID ${id} not found`);
     }
     
-    this.questionRepository.softRemove(existingQuestion)
+    this.questionRepository.remove(existingQuestion)
   }
 }

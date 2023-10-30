@@ -72,7 +72,10 @@ export class UserService {
     });
   }
 
-  async delete(id:number){
-    await this.usersRepository.delete(id)
+  async remove(id:number){
+    let u = await this.usersRepository.findOne({where: { id: id }})
+    if(u){
+      await this.usersRepository.softRemove(u)
+    }
   }
 }

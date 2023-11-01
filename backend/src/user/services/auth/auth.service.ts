@@ -11,7 +11,7 @@ export class AuthService {
 
   async register(userDto: CreateUserDto): Promise<UserEntity> {
     // check if user exists and send custom error message
-    console.log(userDto.email)
+    console.log(userDto)
     if (await this.userService.isUserExists(userDto.email)) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }

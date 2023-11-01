@@ -2,7 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
+  Patch,
   Post,
+  Req,
+  UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -61,6 +65,26 @@ export class UserController {
     return {
       message: 'Users retrieved successfully',
       users,
+    };
+  }
+
+  @Post('personalized-offers')
+  async inviteForPersonalizedOffers(@Body('invites') invites: any[]) {
+    return {
+      status: HttpStatus.OK,
+      data: await this.userService.inviteForPersonalizedOffers(invites),
+    };
+  }
+  
+  @Patch('update-city')
+  async updateCity(@Req() request: Request, @Body('city') city: string) {
+    const token:any = request.headers['authorization']; // or any other header name
+    if (!token) {
+      throw new UnauthorizedException('User token not found');
+    }
+    return {
+      status: HttpStatus.OK,
+      data: await this.userService.updateCity(city, token),
     };
   }
 }

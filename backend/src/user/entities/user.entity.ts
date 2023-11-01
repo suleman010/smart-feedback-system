@@ -1,6 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Role } from '../guards/role.enum';
 import { CompanyEntity } from 'src/company/entities/company.entity';
+import { RewardEntity } from 'src/reward/entities/reward.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+import { Role } from '../guards/role.enum';
 
 @Entity({
   name: 'users',
@@ -26,7 +38,7 @@ export class UserEntity {
   phone?: string;
 
   @Column({
-    name: 'password',
+    name: 'password', nullable: true
   })
   passwordHash: string;
 
@@ -39,10 +51,13 @@ export class UserEntity {
   token: string;
 
   @CreateDateColumn() // Automatically sets the creation date
-  created_at: Date;
+  created_at: EpochTimeStamp;
 
   @UpdateDateColumn() // Automatically updates the timestamp when the record is updated
-  updated_at: Date;
+  updated_at: EpochTimeStamp;
+
+  @DeleteDateColumn()
+  deleted_at: EpochTimeStamp;
 
   @Column({ nullable: true })
   isVirtual?: string;
@@ -71,8 +86,8 @@ export class UserEntity {
   @Column({ nullable: true })
   city?: string;
 
-  // @OneToMany(() => Reward, (reward) => reward.user)
-  // rewards: Reward[];
+  @OneToMany(() => RewardEntity, (reward) => reward.user)
+  rewards: RewardEntity[];
 
   @OneToOne(() => CompanyEntity, company => company.admin)
   @JoinColumn({ name: 'companyId' }) // this decorator is optional but helps specify the column name

@@ -7,6 +7,7 @@ import { AsyncStorageMiddleware } from './global/middleware/async-storage/async-
 import { LoggerModule } from './logger/logger.module';
 import { getConfig } from './services/app-config/configuration';
 import { UserModule } from './user/user.module';
+import { RewardModule } from './reward/reward.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './user/user.module';
     UserModule,
     ConfigModule,
     LoggerModule,
-    CompanyModule
+    CompanyModule,
+    RewardModule
   ],
 })
 export class AppModule {

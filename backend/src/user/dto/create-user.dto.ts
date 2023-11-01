@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, isBoolean } from 'class-validator';
 import { Role } from '../guards/role.enum';
 
 export class CreateAdminDto {
@@ -26,16 +26,44 @@ export class CreateAdminDto {
 }
 
 export class CreateUserDto {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    isVirtual: boolean;
-    manufacturer: string;
-    model: string;
-    operatingSystem: string;
-    osVersion: string;
-    platform: string;
-    webViewVersion: string;
-  
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  phone: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isVirtual: boolean;
+
+  @IsString()
+  @IsOptional()
+  manufacturer: string;
+
+  @IsString()
+  @IsOptional()
+  model: string;
+
+  @IsString()
+  @IsOptional()
+  operatingSystem: string;
+
+  @IsString()
+  @IsOptional()
+  osVersion: string;
+
+  @IsString()
+  @IsOptional()
+  platform: string;
+
+  @IsString()
+  @IsOptional()
+  webViewVersion: string;
+
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../../entities/user.entity';
@@ -101,5 +101,41 @@ export class UserService {
 
   async delete(id:number){
     await this.usersRepository.delete(id)
+  }
+
+  async inviteForPersonalizedOffers(invites: any[]) {
+    for (let i = 0; i < invites.length; i++) {
+      const user = await this.usersRepository.findOne({
+        where: {
+          id: invites[i],
+        },
+      });
+      if (!user) {
+        throw new BadRequestException('User id incorrect');
+      }
+      user.invitation = true;
+      await this.usersRepository.save(user);
+    }
+    return 'Invitation Sent';
+  }
+
+  async updateCity(city: string, user: UserEntity) {
+    // const user = await this.findByCookie(cookie);
+    user.invitation = false;
+    user.city = city;
+    await this.usersRepository.save(user);
+    return 'City Updated For User';
+  }
+
+  async findById(id: any) {
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
+  update(id: number, updateSessionUserDto: any) {
+    return `This action updates a #${id} sessionUser`;
+  }
+
+  async remove(id: number) {
+    return await this.usersRepository.softRemove({ id });
   }
 }

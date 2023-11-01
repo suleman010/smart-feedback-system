@@ -20,10 +20,10 @@ export class QuestionEntity {
     // @OneToMany(type => ReviewEntity, review => review.question)
     // reviews: ReviewEntity[];
 
-    @OneToMany(type => QuestionRatingEntity, rating => rating.question, {
-        cascade: true
-    })
-    ratings: QuestionRatingEntity[];
+    // @OneToMany(type => QuestionRatingEntity, rating => rating.question, {
+    //     cascade: true
+    // })
+    // ratings: QuestionRatingEntity[];
 
     @CreateDateColumn() // Automatically sets the creation date
     created_at: Date;

@@ -16,17 +16,18 @@ export class CompanyService {
   ) { }
 
   async create(createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
-    // const { name, description, adminId } = createCompanyDto;
+    const { name, description, adminId } = createCompanyDto;
 
-    // const newCompany = await this.companyRepository.create({
-    //   name,
-    //   description,
-    // });
+    const newCompany = await this.companyRepository.create({
+      name,
+      description,
+    });
 
-    // if (adminId) {
-    //   const adminUser = await this.userService.findOne(adminId);
-    //   adminUser ? newCompany.admin = adminUser : this.error('User not found');
-    // }
+    if (adminId) {
+      const adminUser = await this.userService.findOne(adminId);
+      adminUser ? newCompany.admin = adminUser : this.error('User not found');
+    }
+    
 
     // return await this.companyRepository.save(newCompany);
     throw new NotFoundException(`Company with ID not found`);

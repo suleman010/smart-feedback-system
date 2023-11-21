@@ -1,6 +1,6 @@
 export enum Role {
     SuperAdmin = 'super-admin',
-    ShopAdmin = 'shop-admin',
+    CompanyAdmin = 'company-admin',
     user = 'user'
   }
   

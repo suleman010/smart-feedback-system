@@ -77,7 +77,7 @@ export class UserController {
   }
   
   @Patch('update-city')
-  async updateCity(@Req() request: Request, @Body('city') city: string) {
+  async updateCity(@Req() request: any, @Body('city') city: string) {
     const token:any = request.headers['authorization']; // or any other header name
     if (!token) {
       throw new UnauthorizedException('User token not found');
